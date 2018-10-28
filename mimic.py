@@ -45,18 +45,49 @@ columns, so the output looks better.
 
 import random
 import sys
+from collections import defaultdict
 
 
 def mimic_dict(filename):
     """Returns mimic dict mapping each word to list of words which follow it."""
     # +++your code here+++
-    raise NotImplementedError("Get to Work!")
+    f = open(filename, 'r')
+    all_text_list = f.read().lower().split()
+    # all_text_list = f.readlines(5)
+    key_words = set(all_text_list)
+    mimic = {}
+    f.close()
+    for word in key_words:
+        count = all_text_list.count(word)
+        word_index = all_text_list.index(word)
+        while count > 0:
+            word_after = word_index + 1
+            if word not in mimic:
+                mimic[word] = []
+            if len(all_text_list) - 1 == word_index:
+                count -= 1
+            elif len(all_text_list) - 1 > word_index:
+                mimic[word].append(all_text_list[word_after])
+                count -= 1
+            if count > 0:
+                word_index = all_text_list[word_after:].index(word)
+    return mimic
 
 
 def print_mimic(mimic_dict, word):
     """Given mimic dict and start word, prints 200 random words."""
     # +++your code here+++
-    raise NotImplementedError("Get to Work!")
+    if word not in mimic_dict:
+        print("Could not find word")
+        return
+    random_words = []
+    while len(random_words) < 200:
+        if len(random_words) == 0:
+            random_words.append(word.lower())
+        next_word = random_words[-1]
+        if mimic_dict[next_word]:
+            random_words.append(random.choice(mimic_dict[next_word]))
+    print(random_words)
 
 
 # Provided main(), calls mimic_dict() and mimic()
@@ -66,7 +97,7 @@ def main():
         sys.exit(1)
 
     d = mimic_dict(sys.argv[1])
-    print_mimic(d, '')
+    print_mimic(d, 'finger')
 
 
 if __name__ == '__main__':
