@@ -49,28 +49,17 @@ from collections import defaultdict
 
 
 def mimic_dict(filename):
-    """Returns mimic dict mapping each word to list of words which follow it."""
-    # +++your code here+++
     f = open(filename, 'r')
-    all_text_list = f.read().lower().split()
-    # all_text_list = f.readlines(5)
-    key_words = set(all_text_list)
-    mimic = {}
+    all_text_list = f.read().split()
+    string_length = len(all_text_list)
     f.close()
-    for word in key_words:
-        count = all_text_list.count(word)
-        word_index = all_text_list.index(word)
-        while count > 0:
-            word_after = word_index + 1
-            if word not in mimic:
-                mimic[word] = []
-            if len(all_text_list) - 1 == word_index:
-                count -= 1
-            elif len(all_text_list) - 1 > word_index:
-                mimic[word].append(all_text_list[word_after])
-                count -= 1
-            if count > 0:
-                word_index = all_text_list[word_after:].index(word)
+    mimic = {}
+    mimic[all_text_list[0]] = []
+    for number, word in enumerate(all_text_list):
+        if word not in mimic:
+            mimic[word] = []
+        if number + 1 < string_length:
+            mimic[word].append(all_text_list[number + 1])
     return mimic
 
 
@@ -97,7 +86,7 @@ def main():
         sys.exit(1)
 
     d = mimic_dict(sys.argv[1])
-    print_mimic(d, 'finger')
+    print_mimic(d, 'VERY')
 
 
 if __name__ == '__main__':
